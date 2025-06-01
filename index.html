@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ku">
+<head>
+  <meta charset="UTF-8">
+  <title>Kurdish Culture Quiz Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts for a modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2e294e;
+      --accent: #ffd400;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --card-bg: #fffbe6cc;
+      --text: #222;
+      --radius: 18px;
+      --shadow: 0 4px 24px #0003;
+    }
+    body {
+      background: linear-gradient(135deg, var(--primary) 60%, var(--accent) 100%);
+      color: var(--text);
+      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .game-container {
+      background: var(--card-bg);
+      margin-top: 60px;
+      padding: 40px 32px 28px 32px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      border: 2px solid var(--accent);
+      animation: fadeIn 1.2s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    h1 {
+      color: var(--accent);
+      font-size: 2.2em;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #2e294e44;
+      font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: #eee;
+      border-radius: 5px;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      width: 0%;
+      transition: width 0.4s;
+    }
+    .score {
+      font-size: 1.1em;
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .question {
+      font-size: 1.25em;
+      margin-bottom: 24px;
+      color: var(--primary);
+      font-weight: bold;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .answers button {
+      background: var(--accent);
+      color: var(--primary);
+      border: none;
+      border-radius: 8px;
+      padding: 13px 0;
+      font-size: 1.08em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px #ffd40033;
+      outline: none;
+      position: relative;
+      font-family: 'Montserrat', Arial, sans-serif;
+      letter-spacing: 1px;
+    }
+    .answers button.selected {
+      background: var(--primary);
+      color: var(--accent);
+      box-shadow: 0 2px 12px #2e294e33;
+    }
+    .answers button.correct {
+      background: var(--success);
+      color: #fff;
+    }
+    .answers button.incorrect {
+      background: var(--danger);
+      color: #fff;
+    }
+    .explanation {
+      font-size: 1em;
+      color: #444;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      min-height: 24px;
+      font-style: italic;
+    }
+    .result {
+      font-size: 1.3em;
+      color: var(--accent);
+      margin-top: 18px;
+      font-weight: bold;
+      min-height: 32px;
+      letter-spacing: 1px;
+    }
+    .restart-btn {
+      background: var(--primary);
+      color: var(--accent);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 18px;
+      transition: background 0.2s, color 0.2s;
+      font-family: 'Montserrat', Arial, sans-serif;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 8px #2e294e33;
+    }
+    .restart-btn:hover {
+      background: var(--accent);
+      color: var(--primary);
+    }
+    .footer {
+      margin-top: 40px;
+      color: #fff;
+      font-size: 1.05em;
+      letter-spacing: 1px;
+      text-align: center;
+      font-family: 'Montserrat', Arial, sans-serif;
+      opacity: 0.85;
+      text-shadow: 0 2px 8px #2e294e44;
+    }
+    .footer span {
+      color: var(--accent);
+      font-weight: bold;
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+    @media (max-width: 500px) {
+      .game-container { padding: 18px 4px; }
+      h1 { font-size: 1.3em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Kurdish Culture Quiz</h1>
+    <div class="progress-bar-bg">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="score" id="score"></div>
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div class="explanation" id="explanation"></div>
+    <div class="result" id="result"></div>
+    <button class="restart-btn" id="restartBtn" style="display:none;" onclick="restartGame()">Play Again</button>
+  </div>
+  <div class="footer">
+    Made with ❤️ by <span>Zhiyar Sherwany</span>
+  </div>
+  <script>
+    // Professional Kurdish culture quiz questions with explanations
+    const questions = [
+      {
+        q: "What is the traditional Kurdish dance called?",
+        a: ["Halparke", "Dabke", "Samba", "Tango"],
+        c: 0,
+        exp: "Halparke is a group dance performed at Kurdish celebrations."
+      },
+      {
+        q: "Which city is known as the capital of Kurdistan Region?",
+        a: ["Erbil", "Sulaymaniyah", "Duhok", "Kirkuk"],
+        c: 0,
+        exp: "Erbil (Hewlêr) is the capital of the Kurdistan Region of Iraq."
+      },
+      {
+        q: "What is the main ingredient in Kurdish dish 'Dolma'?",
+        a: ["Rice", "Potato", "Bread", "Fish"],
+        c: 0,
+        exp: "Rice is the main ingredient, stuffed in vegetables for Dolma."
+      },
+      {
+        q: "Which Kurdish festival celebrates the New Year?",
+        a: ["Newroz", "Eid", "Christmas", "Nowruz"],
+        c: 0,
+        exp: "Newroz is the Kurdish New Year, celebrated on March 21."
+      },
+      {
+        q: "What colors are on the Kurdish flag?",
+        a: ["Red, White, Green, Yellow", "Blue, White, Red", "Green, Black, Yellow", "Red, Blue, Yellow"],
+        c: 0,
+        exp: "The Kurdish flag has red, white, green stripes and a yellow sun."
+      },
+      {
+        q: "Which Kurdish instrument is famous for its unique sound?",
+        a: ["Daf", "Guitar", "Violin", "Piano"],
+        c: 0,
+        exp: "The Daf is a traditional Kurdish frame drum."
+      },
+      {
+        q: "What is the Kurdish word for 'Thank you'?",
+        a: ["Supas", "Shukran", "Merci", "Danke"],
+        c: 0,
+        exp: "'Supas' means 'Thank you' in Kurdish."
+      },
+      {
+        q: "Which mountain is the highest in Kurdistan?",
+        a: ["Cheekha Dar", "Halgurd", "Zagros", "Ararat"],
+        c: 0,
+        exp: "Cheekha Dar is the highest mountain in Kurdistan."
+      },
+      {
+        q: "What is the Kurdish traditional bread called?",
+        a: ["Naan", "Samoon", "Nan-e Tiri", "Lavash"],
+        c: 2,
+        exp: "Nan-e Tiri is a thin, traditional Kurdish bread."
+      },
+      {
+        q: "Which Kurdish poet is famous for his classical poems?",
+        a: ["Nalî", "Shakespeare", "Hafez", "Goethe"],
+        c: 0,
+        exp: "Nalî is a renowned Kurdish classical poet."
+      }
+    ];
+
+    let current = 0, score = 0, answered = false;
+
+    function updateProgressBar() {
+      const percent = ((current) / questions.length) * 100;
+      document.getElementById('progressBar').style.width = percent + "%";
+    }
+
+    function showQuestion() {
+      document.getElementById('result').textContent = '';
+      document.getElementById('explanation').textContent = '';
+      document.getElementById('restartBtn').style.display = 'none';
+      document.getElementById('score').textContent = `Score: ${score} / ${questions.length}`;
+      updateProgressBar();
+      const q = questions[current];
+      document.getElementById('question').textContent = q.q;
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = '';
+      answered = false;
+      q.a.forEach((ans, idx) => {
+        const btn = document.createElement('button');
+        btn.textContent = ans;
+        btn.onclick = () => checkAnswer(idx, btn);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(idx, btn) {
+      if (answered) return;
+      answered = true;
+      const q = questions[current];
+      const answersDiv = document.getElementById('answers');
+      // Mark all buttons
+      Array.from(answersDiv.children).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.c) b.classList.add('correct');
+        if (i === idx && i !== q.c) b.classList.add('incorrect');
+        if (i === idx) b.classList.add('selected');
+      });
+      if(idx === q.c) {
+        score++;
+        document.getElementById('result').textContent = "Correct! 🌟";
+      } else {
+        document.getElementById('result').textContent = `Wrong! Correct answer: ${q.a[q.c]}`;
+      }
+      document.getElementById('explanation').textContent = q.exp || '';
+      current++;
+      setTimeout(() => {
+        if(current < questions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }, 1700);
+    }
+
+    function showResult() {
+      updateProgressBar();
+      document.getElementById('question').textContent = '';
+      document.getElementById('answers').innerHTML = '';
+      document.getElementById('explanation').textContent = '';
+      document.getElementById('score').textContent = `Final Score: ${score} / ${questions.length}`;
+      document.getElementById('result').textContent = score === questions.length
+        ? "🏆 Bravo! You know Kurdish culture very well!"
+        : score >= Math.floor(questions.length * 0.7)
+          ? "👏 Good job! You know a lot about Kurdish culture."
+          : "Game Over! Try again to improve your score.";
+      document.getElementById('restartBtn').style.display = 'inline-block';
+      document.getElementById('progressBar').style.width = "100%";
+    }
+
+    function restartGame() {
+      current = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    // Start game
+    showQuestion();
+  </script>
+</body>
+</html>
